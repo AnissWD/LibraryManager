@@ -1,11 +1,9 @@
-package bibliotheque;
+package com.aniss.bibliotheque;
 
 import javax.swing.*;
-import java.awt.*;
 import java.sql.*;
 
 import org.jfree.chart.*;
-import org.jfree.chart.plot.*;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
