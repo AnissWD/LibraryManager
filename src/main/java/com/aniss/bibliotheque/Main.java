@@ -5,11 +5,18 @@ import java.awt.*;
 
 public class Main extends JFrame {
 
-    public Main() {
-        setTitle("Gestion de Bibliothèque");
-        setSize(500, 450);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        public Main() {
+            setTitle("Gestion de Bibliothèque");
+            setSize(500, 450);
+            setLocationRelativeTo(null);
+            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+            try {
+                Image icon = new ImageIcon("src/BibliothequeIcon.png").getImage();
+                setIconImage(icon);
+            } catch (Exception e) {
+                System.out.println("Icon not found: " + e.getMessage());
+            }
 
 
         JLabel titre = new JLabel("Système de Gestion de Bibliothèque", JLabel.CENTER);

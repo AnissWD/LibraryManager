@@ -35,6 +35,12 @@ public class LivreUI extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
+        try {
+            Image icon = Toolkit.getDefaultToolkit().getImage("src/BibliothequeIcon.png");
+            setIconImage(icon);
+        } catch (Exception e) {
+            System.out.println("Icon not found");
+        }
 
 
         JPanel form = new JPanel(new GridLayout(5, 2, 5, 5));
