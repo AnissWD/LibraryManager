@@ -1,31 +1,50 @@
 package com.aniss.Library;
 
 import javax.swing.*;
+import java.awt.*;
 import java.sql.*;
-
 import org.jfree.chart.*;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
+import org.jfree.chart.plot.PlotOrientation;
 
-public class StatistiquesUI extends JFrame {
+public class StatisticsPanel extends JPanel {
 
-    public StatistiquesUI() {
-        setTitle("Statistiques de la bibliothèque");
-        setSize(950, 600);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    private JTabbedPane tabs;
 
-        JTabbedPane tabs = new JTabbedPane();
+    public StatisticsPanel() {
+        setLayout(new BorderLayout());
+        setBackground(UITheme.MAIN_BG);
+        setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 
-        tabs.add("Livres populaires", panelLivresPopulaires());
-        tabs.add("Fréquentation", panelFrequentation());
-        tabs.add("Emprunts par filière", panelParFiliere());
-        tabs.add("Disponibilité des livres", panelDisponibilite());
+        tabs = new JTabbedPane();
+        tabs.setFont(UITheme.NORMAL_FONT);
+        tabs.setBackground(Color.WHITE);
 
-        add(tabs);
-        setVisible(true);
+        refresh();
+
+        add(tabs, BorderLayout.CENTER);
     }
 
+    public void refresh() {
+        tabs.removeAll();
+
+        tabs.add(Language.get("most_borrowed"), createPanelWrapper(panelLivresPopulaires()));
+        tabs.add(Language.get("library_traffic"), createPanelWrapper(panelFrequentation()));
+        tabs.add(Language.get("loans_by_major"), createPanelWrapper(panelParFiliere()));
+        tabs.add(Language.get("book_availability"), createPanelWrapper(panelDisponibilite()));
+    }
+
+    private JPanel createPanelWrapper(JPanel chartPanel) {
+        JPanel wrapper = new JPanel(new BorderLayout());
+        wrapper.setBackground(Color.WHITE);
+        wrapper.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(UITheme.BORDER, 1),
+                BorderFactory.createEmptyBorder(20, 20, 20, 20)
+        ));
+        wrapper.add(chartPanel, BorderLayout.CENTER);
+        return wrapper;
+    }
 
     private JPanel panelLivresPopulaires() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -35,6 +54,8 @@ public class StatistiquesUI extends JFrame {
             FROM emprunt e
             JOIN livre l ON e.id_livre = l.id
             GROUP BY l.titre
+            ORDER BY nb DESC
+            LIMIT 10
         """;
 
         try (Connection c = DBConnection.getConnection();
@@ -44,7 +65,7 @@ public class StatistiquesUI extends JFrame {
             while (rs.next()) {
                 dataset.addValue(
                         rs.getInt("nb"),
-                        "Nombre d'emprunts",
+                        Language.get("loans_count"),
                         rs.getString("titre")
                 );
             }
@@ -54,15 +75,21 @@ public class StatistiquesUI extends JFrame {
         }
 
         JFreeChart chart = ChartFactory.createBarChart(
-                "Livres les plus empruntés",
-                "Livre",
-                "Emprunts",
-                dataset
+                Language.get("most_borrowed"),
+                Language.get("book"),
+                Language.get("loans_count"),
+                dataset,
+                PlotOrientation.VERTICAL,
+                true,
+                true,
+                false
         );
+
+        chart.setBackgroundPaint(Color.WHITE);
+        chart.getPlot().setBackgroundPaint(new Color(248, 249, 250));
 
         return new ChartPanel(chart);
     }
-
 
     private JPanel panelFrequentation() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -76,7 +103,7 @@ public class StatistiquesUI extends JFrame {
             if (rs.next()) {
                 dataset.addValue(
                         rs.getInt("total"),
-                        "Emprunts",
+                        Language.get("loans_count"),
                         "Total"
                 );
             }
@@ -86,15 +113,21 @@ public class StatistiquesUI extends JFrame {
         }
 
         JFreeChart chart = ChartFactory.createBarChart(
-                "Fréquentation de la bibliothèque",
+                Language.get("library_traffic"),
                 "",
-                "Nombre total d'emprunts",
-                dataset
+                Language.get("total_loans"),
+                dataset,
+                PlotOrientation.VERTICAL,
+                true,
+                true,
+                false
         );
+
+        chart.setBackgroundPaint(Color.WHITE);
+        chart.getPlot().setBackgroundPaint(new Color(248, 249, 250));
 
         return new ChartPanel(chart);
     }
-
 
     private JPanel panelParFiliere() {
         DefaultPieDataset dataset = new DefaultPieDataset();
@@ -122,16 +155,18 @@ public class StatistiquesUI extends JFrame {
         }
 
         JFreeChart chart = ChartFactory.createPieChart(
-                "Emprunts par filière",
+                Language.get("loans_by_major"),
                 dataset,
                 true,
                 true,
                 false
         );
 
+        chart.setBackgroundPaint(Color.WHITE);
+        chart.getPlot().setBackgroundPaint(Color.WHITE);
+
         return new ChartPanel(chart);
     }
-
 
     private JPanel panelDisponibilite() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -139,11 +174,9 @@ public class StatistiquesUI extends JFrame {
         String sql = """
             SELECT 
                 l.titre,
-                l.nb_exemplaires -
-                COUNT(CASE WHEN e.rendu = 0 THEN 1 END) AS disponibles
+                l.nb_exemplaires - 
+                COALESCE((SELECT COUNT(*) FROM emprunt e WHERE e.id_livre = l.id AND e.rendu = 0), 0) AS disponibles
             FROM livre l
-            LEFT JOIN emprunt e ON l.id = e.id_livre
-            GROUP BY l.id
         """;
 
         try (Connection c = DBConnection.getConnection();
@@ -153,7 +186,7 @@ public class StatistiquesUI extends JFrame {
             while (rs.next()) {
                 dataset.addValue(
                         rs.getInt("disponibles"),
-                        "Exemplaires disponibles",
+                        Language.get("available_copies"),
                         rs.getString("titre")
                 );
             }
@@ -163,16 +196,19 @@ public class StatistiquesUI extends JFrame {
         }
 
         JFreeChart chart = ChartFactory.createBarChart(
-                "Disponibilité des livres",
-                "Livre",
-                "Exemplaires disponibles",
-                dataset
+                Language.get("book_availability"),
+                Language.get("book"),
+                Language.get("available_copies"),
+                dataset,
+                PlotOrientation.VERTICAL,
+                true,
+                true,
+                false
         );
 
-        return new ChartPanel(chart);
-    }
+        chart.setBackgroundPaint(Color.WHITE);
+        chart.getPlot().setBackgroundPaint(new Color(248, 249, 250));
 
-    public static void main(String[] args) {
-        new StatistiquesUI();
+        return new ChartPanel(chart);
     }
 }
