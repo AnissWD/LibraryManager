@@ -1,4 +1,4 @@
-package com.aniss.bibliotheque;
+package com.aniss.Library;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
