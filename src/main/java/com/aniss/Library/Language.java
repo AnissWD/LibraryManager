@@ -11,7 +11,7 @@ public class Language {
 
     static {
         Map<String, String> fr = new HashMap<>();
-        fr.put("app_title", "Gestion de Bibliothèque");
+        fr.put("Library Manager", "Gestion de Bibliothèque");
         fr.put("books", "Livres");
         fr.put("students", "Étudiants");
         fr.put("loans", "Emprunts");
