@@ -6,11 +6,9 @@ import java.sql.Statement;
 public class InitDB {
 
     public static void init() {
-
         try {
             Connection c = DBConnection.getConnection();
             Statement st = c.createStatement();
-
 
             st.execute("""
                 CREATE TABLE IF NOT EXISTS livre (
@@ -23,7 +21,6 @@ public class InitDB {
                 )
             """);
 
-
             st.execute("""
                 CREATE TABLE IF NOT EXISTS etudiant (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,7 +28,6 @@ public class InitDB {
                     filiere TEXT NOT NULL
                 )
             """);
-
 
             st.execute("""
                 CREATE TABLE IF NOT EXISTS emprunt (
@@ -46,7 +42,7 @@ public class InitDB {
                 )
             """);
 
-            System.out.println("Base de données initialisée avec succès");
+            System.out.println("Database initialized successfully");
 
         } catch (Exception e) {
             e.printStackTrace();
