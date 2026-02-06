@@ -64,11 +64,11 @@ public class Main extends JFrame {
         sidebarPanel.add(header);
         sidebarPanel.add(Box.createVerticalStrut(10));
 
-        sidebarPanel.add(createMenuItem("📊 " + Language.get("statistics"), "dashboard"));
+        sidebarPanel.add(createMenuItem("🏠 Dashboard", "dashboard"));
         sidebarPanel.add(createMenuItem("📚 " + Language.get("books"), "books"));
         sidebarPanel.add(createMenuItem("👥 " + Language.get("students"), "students"));
         sidebarPanel.add(createMenuItem("📖 " + Language.get("loans"), "loans"));
-        sidebarPanel.add(createMenuItem("📈 " + Language.get("statistics"), "statistics"));
+        sidebarPanel.add(createMenuItem("📊 " + Language.get("statistics"), "statistics"));
 
         sidebarPanel.add(Box.createVerticalGlue());
 
@@ -77,12 +77,28 @@ public class Main extends JFrame {
 
     private JButton createLanguageButton(String text, String lang) {
         JButton btn = new JButton(text);
-        btn.setFont(UITheme.SMALL_FONT);
-        btn.setForeground(UITheme.SIDEBAR_TEXT);
-        btn.setBackground(Language.getCurrentLanguage().equals(lang) ? UITheme.SIDEBAR_ACTIVE : UITheme.SIDEBAR_BG);
-        btn.setBorderPainted(false);
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        boolean isActive = Language.getCurrentLanguage().equals(lang);
+        btn.setForeground(isActive ? Color.WHITE : UITheme.TEXT_SECONDARY);
+        btn.setBackground(isActive ? UITheme.SIDEBAR_ACTIVE : new Color(52, 63, 82));
+        btn.setBorderPainted(true);
+        btn.setBorder(BorderFactory.createLineBorder(isActive ? UITheme.SIDEBAR_ACTIVE : new Color(70, 80, 95), 1));
         btn.setFocusPainted(false);
-        btn.setPreferredSize(new Dimension(40, 25));
+        btn.setPreferredSize(new Dimension(40, 28));
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                if (!isActive) {
+                    btn.setBackground(new Color(70, 80, 95));
+                }
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                if (!isActive) {
+                    btn.setBackground(new Color(52, 63, 82));
+                }
+            }
+        });
 
         btn.addActionListener(e -> {
             Language.setLanguage(lang);
@@ -167,7 +183,12 @@ public class Main extends JFrame {
 
     private void switchPanel(String panelName, String title) {
         cardLayout.show(mainContentPanel, panelName);
-        titleLabel.setText(title.substring(title.indexOf(" ") + 1));
+
+        String displayTitle = title;
+        if (title.contains(" ")) {
+            displayTitle = title.substring(title.indexOf(" ") + 1);
+        }
+        titleLabel.setText(displayTitle);
 
         switch (panelName) {
             case "books" -> booksPanel.refresh();

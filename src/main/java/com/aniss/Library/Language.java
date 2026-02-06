@@ -11,7 +11,7 @@ public class Language {
 
     static {
         Map<String, String> fr = new HashMap<>();
-        fr.put("Library Manager", "Gestion de Bibliothèque");
+        fr.put("app_title", "Gestion de Bibliothèque");
         fr.put("books", "Livres");
         fr.put("students", "Étudiants");
         fr.put("loans", "Emprunts");
@@ -69,9 +69,10 @@ public class Language {
         fr.put("total_students", "Total Étudiants");
         fr.put("active_loans", "Emprunts Actifs");
         fr.put("available", "Disponibles");
+        fr.put("dashboard", "Tableau de bord");
 
         Map<String, String> en = new HashMap<>();
-        en.put("Library Manager", "Library Management");
+        en.put("app_title", "Library Management");
         en.put("books", "Books");
         en.put("students", "Students");
         en.put("loans", "Loans");
@@ -129,6 +130,7 @@ public class Language {
         en.put("total_students", "Total Students");
         en.put("active_loans", "Active Loans");
         en.put("available", "Available");
+        en.put("dashboard", "Dashboard");
 
         translations.put("fr", fr);
         translations.put("en", en);
