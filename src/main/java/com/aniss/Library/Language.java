@@ -71,7 +71,7 @@ public class Language {
         fr.put("available", "Disponibles");
 
         Map<String, String> en = new HashMap<>();
-        en.put("app_title", "Library Management");
+        en.put("Library Manager", "Library Management");
         en.put("books", "Books");
         en.put("students", "Students");
         en.put("loans", "Loans");
