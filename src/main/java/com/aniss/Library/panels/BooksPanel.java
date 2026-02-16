@@ -1,4 +1,9 @@
-package com.aniss.Library;
+package com.aniss.Library.panels;
+
+import com.aniss.Library.util.DBConnection;
+import com.aniss.Library.util.ExportPDF;
+import com.aniss.Library.util.Language;
+import com.aniss.Library.UITheme;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

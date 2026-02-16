@@ -1,5 +1,9 @@
 package com.aniss.Library;
 
+import com.aniss.Library.panels.*;
+import com.aniss.Library.util.InitDB;
+import com.aniss.Library.util.Language;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;

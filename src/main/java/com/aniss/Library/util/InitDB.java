@@ -1,4 +1,4 @@
-package com.aniss.Library;
+package com.aniss.Library.util;
 
 import java.sql.Connection;
 import java.sql.Statement;

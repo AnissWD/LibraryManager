@@ -1,8 +1,12 @@
-package com.aniss.Library;
+package com.aniss.Library.panels;
 
 import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
+
+import com.aniss.Library.util.DBConnection;
+import com.aniss.Library.util.Language;
+import com.aniss.Library.UITheme;
 import org.jfree.chart.*;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
